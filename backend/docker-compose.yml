@@ -1,0 +1,9 @@
+services:
+  backend:
+    image: your_choice_backend_image:latest
+    build: .
+    env_file:
+      - .env  # Load environment variables from .env file
+    container_name: your_choice_backend_image  # Set custom container name
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"  # Map host port to container port using APP_PORT

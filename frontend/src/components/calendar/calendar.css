@@ -1,0 +1,240 @@
+/* General layout for the calendar */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    font-family: 'Poppins', sans-serif;
+    background-repeat: repeat;
+    background-color: rgba(255, 255, 255, 0.4); 
+    padding-bottom: 30px; /* Space below the calendar */
+
+    
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: rgba(240, 240, 240, 0.9);
+    border: 2px solid #3498db;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header h2 {
+    margin: 0 20px;
+    color: #2c3e50;
+}
+
+.change-week {
+    all: unset;
+    font-size: 40px;
+    cursor: pointer;
+    color: #3498db;
+}
+
+.change-week:hover {
+    color: #2980b9;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: rgba(245, 245, 245, 0.9);
+    border-radius: 20px;
+}
+
+.filters div {
+    display: flex;
+    align-items: center;
+}
+
+.filter-label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.filter,
+.active-filter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.active-filter {
+    border-color: #2c3e50;
+}
+
+.filter:hover,
+.active-filter:hover {
+    opacity: 0.7;
+}
+
+.clear-filter {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.clear-filter:hover {
+    text-decoration: underline;
+}
+
+.calendar-grid-wrapper {
+    display: flex;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.time-label-column {
+    padding-top: 50px; 
+    display: grid;
+    grid-template-rows: repeat(48, 80px);
+    width: 60px;
+    background-color: rgba(245, 245, 245, 0);
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    box-sizing: border-box; 
+}
+
+.time-label {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 12px;
+    padding: 0; 
+    background-color: rgba(245, 245, 245, 0.9);
+    height: 80px;
+    box-sizing: border-box; 
+    border-top: 1px solid #ddd; 
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(150px, 1fr));
+}
+
+.calendar-day {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #ccc;
+}
+
+.calendar-grid h3 {
+    background-color: rgba(245, 245, 245, 0.9);
+    text-align: center;
+    margin: 0;
+    height: 50px; 
+    line-height: 50px; 
+    color: #2c3e50;
+    font-size: 16px;
+    box-sizing: border-box; 
+    border-top: 1px solid #ccc; 
+}
+
+.time-slots {
+    display: grid;
+    grid-template-rows: repeat(48, 80px); 
+}
+
+.time-slot {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9);
+    height: 80px;
+    box-sizing: border-box; 
+    border-top: 1px solid #ddd; 
+
+}
+
+/* Placeholder for content inside each slot */
+.content-area {
+    position: absolute;
+    width: 100%;
+    /* Placeholder background for content */
+    height: 100%;
+}
+
+.task-ribbon {
+    width: 100%;
+    padding: 1px;
+    box-sizing: border-box;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.import-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    padding: 10px;
+    background-color: rgba(245, 245, 245, 0.9);
+    border-radius: 20px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.import-data input[type='file'] {
+    margin-left: 10px;
+}
+
+@media (max-width: 1250px) {
+    .calendar-grid h3 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .calendar-grid h3 {
+        font-size: 12px;
+    }
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 830px) {
+    .calendar-grid-wrapper {
+        flex-direction: column;
+        display:block;
+        /* Stack everything vertically */
+    }
+
+    /* Hide the time label columns on small screens */
+    .time-label-column {
+        display: none;
+    }
+
+    /* Show inline time labels inside each time slot */
+    .time-label-inline {
+        display: block;
+    }
+
+    .time-slot {
+        display: flex;
+        justify-content: flex-start;
+        /* Align time label and content horizontally */
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(1, 100vw);
+        /* Show one day per view on smaller screens */
+    }
+
+    .calendar-grid h3 {
+        width: 100vw;
+    }
+}

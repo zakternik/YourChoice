@@ -1,0 +1,101 @@
+/* login.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+}
+
+/* prevent scrolling*/
+.no-scroll {
+    overflow: hidden;
+  }
+
+.login-background {
+    background-image: url('/src/src/bg2.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    padding: 20px;
+    background-color: rgba(245, 245, 245, 0.7);
+    color: #333;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.login-container h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds space between form elements */
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd; 
+    border-radius: 20px; 
+    box-sizing: border-box;
+    background-color: #fff; 
+}
+
+.login-button, .google-button {
+    padding: 12px 20px;
+    margin: 5px 0; /* Space between buttons */
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 20px; 
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover, .google-button:hover {
+    background-color: #2980b9;
+}
+
+.google-button {
+    background-color: #db4437; 
+}
+
+.separator {
+    margin: 20px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.terms {
+    font-size: 0.8em;
+    color: #666;
+}

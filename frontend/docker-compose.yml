@@ -1,0 +1,9 @@
+services:
+  frontend:
+    image: planer_tnp_frontend_image:latest
+    build: .
+    container_name: planer_tnp_frontend  # Custom container name
+    ports:
+      - "${FRONTEND_PORT}:80"  # Map port 80 of the container to port 3000 on the host
+    environment:
+      - NODE_ENV=production  # Set environment variable for production mode
