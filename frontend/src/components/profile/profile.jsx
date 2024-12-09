@@ -25,29 +25,30 @@ function Profile() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [toastMessages, setToastMessages] = useState([]);
 
   useEffect(() => {
     if (Cookie.get("signed_in_user") !== undefined) {
       const user = JSON.parse(Cookie.get('signed_in_user'));
-
-      axios.get(`${env.api}/auth/user/${user._id}/get-profile`).then((response) => {
-        setUserData((prevData) => ({
-          ...prevData,
-          Email: response.data.Email || "",
-          Username: response.data.Username || "",
-          FirstName: response.data.FirstName || "",
-          LastName: response.data.LastName || "",
-          Country: response.data.Country || "",
-          PhoneNumber: response.data.PhoneNumber || "",
-          Location: response.data.Location || "",
-          Birthday: {
-            Day: response.data.Birthday?.Day || "",
-            Month: response.data.Birthday?.Month || "",
-          },
-        }));
-      }).catch((error) => {
-        console.log('Error:', error);
-      });
+      axios.get(`${env.api}/auth/user/${user._id}/get-profile`)
+        .then((response) => {
+          setUserData((prevData) => ({
+            ...prevData,
+            Email: response.data.Email || "",
+            Username: response.data.Username || "",
+            FirstName: response.data.FirstName || "",
+            LastName: response.data.LastName || "",
+            Country: response.data.Country || "",
+            PhoneNumber: response.data.PhoneNumber || "",
+            Location: response.data.Location || "",
+            Birthday: {
+              Day: response.data.Birthday?.Day || "",
+              Month: response.data.Birthday?.Month || "",
+            },
+          }));
+        }).catch((error) => {
+          console.log('Error:', error);
+        });
     }
   }, []);
 
@@ -71,31 +72,32 @@ function Profile() {
 
   const handleSaveChanges = () => {
     const user = JSON.parse(Cookie.get('signed_in_user'));
-    axios.put(`${env.api}/auth/user/${user._id}/update-data`, userData).then(() => {
-      alert('Changes saved!');
-    }).catch((error) => {
-      console.log('Error:', error);
-    });
+    axios.put(`${env.api}/auth/user/${user._id}/update-data`, userData)
+      .then(() => {
+        showToast('Changes saved!');
+      }).catch((error) => {
+        console.log('Error:', error);
+      });
   };
 
   const handleDeleteAccount = () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       const user = JSON.parse(Cookie.get('signed_in_user'));
-      axios.delete(`${env.api}/auth/user/${user._id}`).then(() => {
-        Cookie.remove("signed_in_user");
-        alert('Account deleted.');
-        navigate("/");
-        window.location.reload();
-      }).catch((error) => {
-        console.log('Error:', error);
-      });
+      axios.delete(`${env.api}/auth/user/${user._id}`)
+        .then(() => {
+          Cookie.remove("signed_in_user");
+          showToast('Account deleted.', 'error');
+          navigate("/");
+          window.location.reload();
+        }).catch((error) => {
+          console.log('Error:', error);
+        });
     }
   };
 
   const handlePasswordChange = () => {
     if (newPassword !== confirmPassword) {
-      alert('New password and confirmation do not match.');
-      // TODO - Add API call
+      showToast('New password and confirmation do not match.', 'error');
       return;
     }
 
@@ -104,15 +106,27 @@ function Profile() {
       currentPassword,
       newPassword,
     }).then(() => {
-      alert('Password changed successfully.');
+      showToast('Password changed successfully.');
       setModalOpen(false);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     }).catch((error) => {
       console.log('Error:', error);
-      alert('Failed to change password. Please check your current password.');
+      showToast('Failed to change password. Please check your current password.', 'error');
     });
+  };
+
+  const showToast = (message, type = 'success') => {
+    const id = Date.now();
+    setToastMessages((prev) => [
+      ...prev,
+      { id, message, type },
+    ]);
+
+    setTimeout(() => {
+      setToastMessages((prev) => prev.filter((toast) => toast.id !== id));
+    }, 5000);
   };
 
   return (
@@ -247,6 +261,19 @@ function Profile() {
         </div>
       </div>
 
+      {/* Toast obvestila */}
+      <div className="toast-container">
+        {toastMessages.map((toast) => (
+          <div
+            key={toast.id}
+            className={`toast ${toast.type === 'error' ? 'toast-error' : ''} show`}
+          >
+            {toast.message}
+          </div>
+        ))}
+      </div>
+
+      {/* Modal za spremembo gesla */}
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
