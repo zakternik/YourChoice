@@ -7,7 +7,6 @@ import './profile.css';
 
 function Profile() {
   const navigate = useNavigate();
-  // Mock user data
   const [userData, setUserData] = useState({
     FirstName: '',
     LastName: '',
@@ -22,19 +21,20 @@ function Profile() {
     },
   });
 
-  // Load mock data when the component mounts
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   useEffect(() => {
-    console.log(Cookie.get("signed_in_user"));
     if (Cookie.get("signed_in_user") !== undefined) {
       const user = JSON.parse(Cookie.get('signed_in_user'));
 
       axios.get(`${env.api}/auth/user/${user._id}/get-profile`).then((response) => {
-        console.log("USER:", response.data);
-        // Map backend fields with capital letters to lowercase fields in userData state
         setUserData((prevData) => ({
           ...prevData,
-          Email: response.data.Email || "",       // Map "Email" to "email"
-          Username: response.data.Username || "", // Map "Username" to "Username"
+          Email: response.data.Email || "",
+          Username: response.data.Username || "",
           FirstName: response.data.FirstName || "",
           LastName: response.data.LastName || "",
           Country: response.data.Country || "",
@@ -49,25 +49,10 @@ function Profile() {
         console.log('Error:', error);
       });
     }
-    /*    const mockData = {
-          FirstName: 'Name',
-          LastName: 'Surname',
-          Username: 'Username',
-          email: 'name123@example.com',
-          Country: 'Slovenija',
-          PhoneNumber: '+1 123 123 123 ',
-          Location: 'Maribor',
-          birthday: {
-            day: '1',
-            month: 'January',
-          },
-        };
-        setUserData(mockData);*/
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(e.target)
     if (name === 'Day' || name === 'Month') {
       setUserData((prevData) => ({
         ...prevData,
@@ -100,121 +85,206 @@ function Profile() {
         Cookie.remove("signed_in_user");
         alert('Account deleted.');
         navigate("/");
-        window.Location.reload();
+        window.location.reload();
       }).catch((error) => {
         console.log('Error:', error);
       });
     }
   };
 
+  const handlePasswordChange = () => {
+    if (newPassword !== confirmPassword) {
+      alert('New password and confirmation do not match.');
+      // TODO - Add API call
+      return;
+    }
+
+    const user = JSON.parse(Cookie.get('signed_in_user'));
+    axios.put(`${env.api}/auth/user/${user._id}/change-password`, {
+      currentPassword,
+      newPassword,
+    }).then(() => {
+      alert('Password changed successfully.');
+      setModalOpen(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    }).catch((error) => {
+      console.log('Error:', error);
+      alert('Failed to change password. Please check your current password.');
+    });
+  };
+
   return (
     <div className="page-background">
       <div className="profile-container">
         <h1>My Profile</h1>
-        <form className="profile-form">
-          <div className="form-group">
-            <label>First Name:</label>
-            <input
-              type="text"
-              name="FirstName"
-              value={userData.FirstName}
-              onChange={handleChange}
-              placeholder="First Name"
-            />
-          </div>
-          <div className="form-group">
-            <label>Last Name:</label>
-            <input
-              type="text"
-              name="LastName"
-              value={userData.LastName}
-              onChange={handleChange}
-              placeholder="Last Name"
-            />
-          </div>
-          <div className="form-group">
-            <label>Username:</label>
-            <input
-              type="text"
-              name="Username"
-              value={userData.Username}
-              onChange={handleChange}
-              placeholder="Username"
-            />
-          </div>
-          <div className="form-group">
-            <label>Email:</label>
-            <input
-              type="email"
-              name="Email"
-              value={userData.Email}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-          </div>
-          <div className="form-group">
-            <label>Country:</label>
-            <input
-              type="text"
-              name="Country"
-              value={userData.Country}
-              onChange={handleChange}
-              placeholder="Country"
-            />
-          </div>
-          <div className="form-group">
-            <label>Phone Number:</label>
-            <input
-              type="text"
-              name="PhoneNumber"
-              value={userData.PhoneNumber}
-              onChange={handleChange}
-              placeholder="+00 000 000 000"
-            />
-          </div>
-          <div className="form-group">
-            <label>Location:</label>
-            <input
-              type="text"
-              name="Location"
-              value={userData.Location}
-              onChange={handleChange}
-              placeholder="Enter your Location"
-            />
-          </div>
-          <div className="form-group birthday-group">
-            <label>Birthday:</label>
-            <input
-              type="text"
-              name="Day"
-              value={userData.Birthday.Day}
-              onChange={handleChange}
-              placeholder="Day"
-            />
-            <input
-              type="text"
-              name="Month"
-              value={userData.Birthday.Month}
-              onChange={handleChange}
-              placeholder="Month"
-            />
-          </div>
-          <button type="button" className="save-button" onClick={handleSaveChanges}>
-            Save Changes
+
+        {/* Sekcija za spremembo osebnih podatkov */}
+        <div className="section data-section">
+          <h2>Update Personal Information</h2>
+          <form className="profile-form">
+            <div className="form-group">
+              <label>First Name:</label>
+              <input
+                type="text"
+                name="FirstName"
+                value={userData.FirstName}
+                onChange={handleChange}
+                placeholder="First Name"
+              />
+            </div>
+            <div className="form-group">
+              <label>Last Name:</label>
+              <input
+                type="text"
+                name="LastName"
+                value={userData.LastName}
+                onChange={handleChange}
+                placeholder="Last Name"
+              />
+            </div>
+            <div className="form-group">
+              <label>Username:</label>
+              <input
+                type="text"
+                name="Username"
+                value={userData.Username}
+                onChange={handleChange}
+                placeholder="Username"
+              />
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                name="Email"
+                value={userData.Email}
+                onChange={handleChange}
+                placeholder="Email"
+              />
+            </div>
+            <div className="form-group">
+              <label>Country:</label>
+              <input
+                type="text"
+                name="Country"
+                value={userData.Country}
+                onChange={handleChange}
+                placeholder="Country"
+              />
+            </div>
+            <div className="form-group">
+              <label>Phone Number:</label>
+              <input
+                type="text"
+                name="PhoneNumber"
+                value={userData.PhoneNumber}
+                onChange={handleChange}
+                placeholder="+00 000 000 000"
+              />
+            </div>
+            <div className="form-group">
+              <label>Location:</label>
+              <input
+                type="text"
+                name="Location"
+                value={userData.Location}
+                onChange={handleChange}
+                placeholder="Enter your Location"
+              />
+            </div>
+            <div className="form-group birthday-group">
+              <label>Birthday:</label>
+              <input
+                type="text"
+                name="Day"
+                value={userData.Birthday.Day}
+                onChange={handleChange}
+                placeholder="Day"
+              />
+              <input
+                type="text"
+                name="Month"
+                value={userData.Birthday.Month}
+                onChange={handleChange}
+                placeholder="Month"
+              />
+            </div>
+            <button type="button" className="save-button" onClick={handleSaveChanges}>
+              Save Changes
+            </button>
+          </form>
+        </div>
+
+        {/* Sekcija za spremembo gesla */}
+        <div className="section password-section">
+          <h2>Change Password</h2>
+          <p>
+              Changing your password regularly will help keep your account secure. 
+              Make sure to choose a strong password that you haven't used before.
+          </p>
+          <button
+            type="button"
+            className="change-password-button"
+            onClick={() => setModalOpen(true)}
+          >
+            Change Password
           </button>
-        </form>
-        <div className="delete-account-section">
+        </div>
+
+        {/* Sekcija za izbris računa */}
+        <div className="section delete-section">
           <h2>Delete Account</h2>
           <p>
-            After deleting your account, you will lose all related information including tasks, events,
-            projects, notes, etc. You will not be able to recover it later, so think twice before doing
-            this.
+            After deleting your account, you will lose all related information
+            including tasks, events, projects, notes, etc. You will not be able to
+            recover it later, so think twice before doing this.
           </p>
           <button type="button" className="delete-button" onClick={handleDeleteAccount}>
             Delete My Account
           </button>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Change Password</h2>
+            <div className="form-group">
+              <label>Current Password:</label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter current password"
+              />
+            </div>
+            <div className="form-group">
+              <label>New Password:</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password"
+              />
+            </div>
+            <div className="form-group">
+              <label>Confirm New Password:</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm new password"
+              />
+            </div>
+            <div className="modal-buttons">
+              <button onClick={handlePasswordChange}>Save</button>
+              <button onClick={() => setModalOpen(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
