@@ -127,6 +127,11 @@
     grid-template-columns: repeat(7, minmax(150px, 1fr));
 }
 
+.calendar-days-header {
+    gap: 1px !important; 
+    border: #ddd 1px solid !important;
+}
+
 .calendar-day {
     display: flex;
     flex-direction: column;
@@ -237,4 +242,82 @@
     .calendar-grid h3 {
         width: 100vw;
     }
+}
+
+.task-ribbon {
+    box-sizing: border-box;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    animation: fadeIn 0.3s ease-in-out;
+    
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sticky headers for better navigation */
+.time-label-column,
+.calendar-grid h3 {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* Highlight weekends */
+.calendar-grid h3.weekend {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Improve filter styling */
+.filter,
+.active-filter {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.active-filter {
+    transform: scale(1.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced import button */
+.import-data input[type='file'] {
+    display: none;
+}
+
+.import-data label {
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.import-data label:hover {
+    background-color: #2980b9;
+}
+
+
+    .calendar-grid-wrapper {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+    }
+
+    .calendar-grid > div {
+        scroll-snap-align: start;
 }

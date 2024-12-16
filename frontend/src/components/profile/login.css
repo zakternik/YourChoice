@@ -98,4 +98,25 @@ body, html {
 .terms {
     font-size: 0.8em;
     color: #666;
+    margin-top: 0.5rem;
 }
+
+.show-password {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .show-password input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  .show-password label {
+    margin: 0px !important;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }

@@ -203,30 +203,34 @@ function Calendar() {
                     ))}
                 </div>
                 <div className="calendar-grid">
-                    {weekDays.map((day, index) => (
+                {weekDays.map((day, index) => {
+                    const isWeekend = day.getDay() === 0 || day.getDay() === 6;
+                    return (
                         <div key={index}>
-                            <h3>{day.toDateString()}</h3>
-                            <div className="calendar-day">
-                                <div className="time-slots">
-                                    {timeSlots.map((slot, slotIndex) => (
-                                        <div key={slotIndex} className="time-slot">
-                                            <div className="content-area">
-                                                {renderTaskInTimeSlot(day, slot)}
-                                            </div>
+                        <h3 className={`calendar-days-header ${isWeekend ? "weekend" : ""}`}>{day.toDateString()}</h3>
+                        <div className="calendar-day">
+                            <div className="time-slots">
+                                {timeSlots.map((slot, slotIndex) => (
+                                    <div key={slotIndex} className="time-slot">
+                                        <div className="content-area">
+                                            {renderTaskInTimeSlot(day, slot)}
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    ))}
+                        </div>
+                    );
+                })}
                 </div>
             </div>
             {signedIn !== false ? (
                 <div className="import-data">
-                    <span>Import your own schedule: </span>
+                   <label htmlFor="file-upload">Import your own schedule</label>
                     <input
+                        id="file-upload"
                         type="file"
-                        accept=".csv"
+                        accept=".json"
                         ref={fileInputRef}
                         onChange={handleFileImport}
                     />

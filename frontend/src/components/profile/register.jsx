@@ -11,6 +11,7 @@ function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // Dodano stanje za prikaz gesla
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,12 +95,21 @@ function Register() {
           <div className="form-group">
             <label htmlFor="password">Password:</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"} // Dinamična sprememba tipa
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <div className="show-password">
+              <input
+                type="checkbox"
+                id="show-password"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)} // Preklapljanje stanja
+              />
+              <label htmlFor="show-password">Show Password</label>
+            </div>
           </div>
           <button type="submit" className="login-button">Register</button>
         </form>

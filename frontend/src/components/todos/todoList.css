@@ -203,3 +203,9 @@ ul {
 .cancel-button:hover {
   background-color: #95a5a6;
 }
+
+.delete-task-button
+{
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
