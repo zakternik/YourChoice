@@ -3,7 +3,7 @@ from urllib.parse import unquote
 
 from flask import Blueprint, jsonify, request
 
-from endpoints.schedule_processor import process_csv_to_db
+from endpoints.schedule_processor import process_csv_to_db, export_to_csv
 from endpoints.schedule_retriever import (retrieve_all_subjects,
                                           retrieve_schedule, fetch_all_schedules_transformed)
 from endpoints.task_logic import delete_task, get_all_tasks, get_tasks_history, set_task
@@ -72,6 +72,12 @@ def upload_schedule():
     result = process_csv_to_db(file_content)
 
     return jsonify(result), 200
+
+# Route to export schedule data to CSV
+@schedule_bp.route('/export-schedule', methods=['GET'])
+def export_schedule():
+    result = export_to_csv()
+    return result
 
 
 # Route to retrieve all subjects for a program

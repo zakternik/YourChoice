@@ -174,6 +174,22 @@ function Calendar() {
         }
     };
 
+    const handleFileExport = () => {
+        axios.get(`${env.api}/schedule/export-schedule`, { responseType: 'blob' })
+            .then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'schedule.csv'); // The name of the file to download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);  // Cleanup the DOM after download
+            })
+            .catch(error => {
+                console.error('Error exporting schedule:', error);
+            });
+    };
+
 
     return (
         <div className="calendar-container">
@@ -225,6 +241,7 @@ function Calendar() {
                 </div>
             </div>
             {signedIn !== false ? (
+                <div>
                 <div className="import-data">
                    <label htmlFor="file-upload">Import your own schedule</label>
                     <input
@@ -234,7 +251,13 @@ function Calendar() {
                         ref={fileInputRef}
                         onChange={handleFileImport}
                     />
-                </div>) : null
+                </div>
+                <div className="import-data">
+                    <button id="file-upload" onClick={handleFileExport}>Export your schedule</button>
+                </div>
+                </div>
+                
+                ) : null
             }
         </div>
     );
