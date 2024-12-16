@@ -147,16 +147,30 @@ function Calendar() {
 
     const handleFileImport = (event) => {
         const file = event.target.files[0];
-        if (file && file.type === "application/json") {
+        if (file && file.type === "text/csv") {
             const reader = new FileReader();
             reader.onload = (e) => {
-                const jsonData = JSON.parse(e.target.result);
-                setTasks(prevTasks => [...prevTasks, jsonData]);
-                console.log(jsonData);
+                const csvData = e.target.result;
+                // console.log(csvData);
+    
+                const formData = new FormData();
+                formData.append("file", file);
+    
+                axios.post(`${env.api}/schedule/upload-schedule`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.error("Error uploading file:", error);
+                });
             };
             reader.readAsText(file);
         } else {
-            alert("Please select a valid JSON file.");
+            alert("Please select a valid CSV file.");
         }
     };
 
@@ -212,7 +226,7 @@ function Calendar() {
                     <span>Import your own schedule: </span>
                     <input
                         type="file"
-                        accept=".json"
+                        accept=".csv"
                         ref={fileInputRef}
                         onChange={handleFileImport}
                     />
