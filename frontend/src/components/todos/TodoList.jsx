@@ -90,11 +90,24 @@ function TodoList() {
     });
   };
 
+  const deleteTask = (taskId) => {
+    const user = JSON.parse(Cookie.get("signed_in_user"));
+    axios
+      .delete(`${env.api}/task/user/${user._id}/tasks/${taskId}`)
+      .then(() => {
+        // Update the tasks state to reflect the deleted task
+        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+      })
+      .catch((error) => {
+        console.error('Error deleting task:', error);
+      });
+  };
+
   // Render tasks
   const renderTasks = () => {
     return tasks.map((task, index) => (
       <li key={index} className="task-item">
-        <div className="task-content">
+        <div className="task-content">  
           <div
             className="color-circle"
             style={{ backgroundColor: task.color }}
@@ -106,6 +119,9 @@ function TodoList() {
             {/* Display start date and end date with time */}
             {new Date(task.startDateTime).toLocaleString('en-GB')} -{' '}
             {new Date(task.endDateTime).toLocaleString('en-GB')}
+          </span>
+          <span className="delete-task-button" onClick={() => deleteTask(task._id)}>
+            🗑️
           </span>
         </div>
       </li>
