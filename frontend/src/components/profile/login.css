@@ -120,3 +120,10 @@ body, html {
     color: #333;
     cursor: pointer;
   }
+
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
