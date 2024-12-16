@@ -76,8 +76,11 @@ function Register() {
   };
 
   return (
-    <div className="login-background">
-      <div className="login-container">
+    <div className="page-background"   style={{ 
+      height: '80vh',
+      overflow: 'auto'  
+    }}>
+      <div className="login-container" style={{marginTop : '4rem'}}>
         <h1>Register</h1>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">

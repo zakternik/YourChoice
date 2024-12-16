@@ -65,7 +65,7 @@ function Login() {
   }, []);
 
   return (
-    <div className="login-background">
+    <div className="page-background">
       <div className="login-container">
         <h1>Login</h1>
         <div className="login-form">
