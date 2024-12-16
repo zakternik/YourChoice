@@ -11,7 +11,9 @@ function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // Novo stanje za ponovitev gesla
   const [showPassword, setShowPassword] = useState(false); // Dodano stanje za prikaz gesla
+  const [errorMessage, setErrorMessage] = useState(''); // Dodano stanje za napake
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +27,12 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Preverimo, če se gesli ujemata
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return; // Preprečimo pošiljanje, če se gesli ne ujemata
+    }
 
     const hashedPassword = sha256(password).toString();
     const data = {
@@ -68,8 +76,11 @@ function Register() {
   };
 
   return (
-    <div className="login-background">
-      <div className="login-container">
+    <div className="page-background"   style={{ 
+      height: '80vh',
+      overflow: 'auto'  
+    }}>
+      <div className="login-container" style={{marginTop : '4rem'}}>
         <h1>Register</h1>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -111,6 +122,19 @@ function Register() {
               <label htmlFor="show-password">Show Password</label>
             </div>
           </div>
+          <div className="form-group">
+            <label htmlFor="confirm-password">Confirm Password:</label>
+            <input
+              type={showPassword ? "text" : "password"} // Dinamična sprememba tipa
+              id="confirm-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {errorMessage && <div className="error-message">{errorMessage}</div>} {/* Prikaz napake */}
+
           <button type="submit" className="login-button">Register</button>
         </form>
 
