@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request
 from endpoints.schedule_processor import process_csv_to_db
 from endpoints.schedule_retriever import (retrieve_all_subjects,
                                           retrieve_schedule, fetch_all_schedules_transformed)
-from endpoints.task_logic import delete_task, get_all_tasks, set_task
+from endpoints.task_logic import delete_task, get_all_tasks, get_tasks_history, set_task
 from endpoints.user_logic import (delete_user, get_user_data, login_user,
                                   register_user, set_user_data,
                                   update_user_data)
@@ -100,6 +100,7 @@ def get_schedule(program_name, subject_name):
 def get_all_formatted_schedules():
     result, status_code = fetch_all_schedules_transformed()
     return jsonify(result), status_code
+
 # Route to add a new task
 @task_bp.route('/user/<user_id>/tasks', methods=['POST'])
 def add_task(user_id):
@@ -112,6 +113,13 @@ def add_task(user_id):
 @task_bp.route('/user/<user_id>/tasks', methods=['GET'])
 def retrieve_tasks(user_id):
     result, status_code = get_all_tasks(user_id)
+    return jsonify(result), status_code
+
+
+# Route to retrieve all tasks history for a user
+@task_bp.route('/user/<user_id>/task_history', methods=['GET'])
+def retrieve_tasks_history(user_id):
+    result, status_code = get_tasks_history(user_id)
     return jsonify(result), status_code
 
 

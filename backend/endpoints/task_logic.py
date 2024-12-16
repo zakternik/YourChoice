@@ -27,11 +27,17 @@ def get_all_tasks(user_id):
         return {"error": "User not found"}, 404
 
     tasks = user.get("tasks", [])
-    # Convert task IDs to strings for JSON serialization
-    for task in tasks:
-        task["_id"] = str(task["_id"])
+    current_time = datetime.utcnow()  # Get current UTC time
 
-    return {"tasks": tasks}, 200
+    # Filter tasks with endDateTime in the future
+    filtered_tasks = []
+    for task in tasks:
+        if "endDateTime" in task and datetime.fromisoformat(task["endDateTime"]) > current_time:
+            # Convert task IDs to strings for JSON serialization
+            task["_id"] = str(task["_id"])
+            filtered_tasks.append(task)
+
+    return {"tasks": filtered_tasks}, 200
 
 
 # user_logic.py
@@ -48,3 +54,24 @@ def delete_task(user_id, task_id):
         return {"error": "User or task not found"}, 404
 
     return {"message": "Task deleted successfully"}, 200
+
+
+def get_tasks_history(user_id):
+    collection = db.users
+    user = collection.find_one({"_id": ObjectId(user_id)}, {"tasks": 1})
+
+    if user is None:
+        return {"error": "User not found"}, 404
+
+    tasks = user.get("tasks", [])
+    current_time = datetime.utcnow()  # Get current UTC time
+
+    # Filter tasks with endDateTime in the past
+    filtered_tasks = []
+    for task in tasks:
+        if "endDateTime" in task and datetime.fromisoformat(task["endDateTime"]) < current_time:
+            # Convert task IDs to strings for JSON serialization
+            task["_id"] = str(task["_id"])
+            filtered_tasks.append(task)
+
+    return {"tasks": filtered_tasks}, 200
