@@ -230,7 +230,7 @@ function Calendar() {
                     <input
                         id="file-upload"
                         type="file"
-                        accept=".json"
+                        accept=".csv"
                         ref={fileInputRef}
                         onChange={handleFileImport}
                     />
