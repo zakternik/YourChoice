@@ -6,45 +6,38 @@ import './todoList.css';
 
 function TodoList() {
   const [tasks, setTasks] = useState([]);
-
+  const [repeatingTasks, setRepeatingTasks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newTask, setNewTask] = useState({
     name: '',
     urgent: false,
-    color: '#3498db', // Default color
-    startDateTime: '', // Start date and time as a string
-    endDateTime: '',   // End date and time as a string
+    color: '#3498db',
+    startDateTime: '',
+    endDateTime: '',
+    repeat: 'none',
+    repeatEndDate: '',  // Added repeatEndDate for handling repetition end date
   });
 
-  // Updated color scheme
+  const repeatOptions = ["none", "daily", "weekly", "monthly"];
+
   const filters = [
-    '#1abc9c',
-    '#2ecc71',
-    '#3498db',
-    '#9b59b6',
-    '#f1c40f',
-    '#e67e22',
-    '#e74c3c',
-    '#34495e',
-    '#95a5a6',
-    '#7f8c8d',
+    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#f1c40f',
+    '#e67e22', '#e74c3c', '#34495e', '#95a5a6', '#7f8c8d',
   ];
 
   useEffect(() => {
     const user = JSON.parse(Cookie.get("signed_in_user"));
     axios.get(`${env.api}/task/user/${user._id}/tasks`).then((response) => {
-      setTasks(response.data.tasks);
+      const allTasks = response.data.tasks;
+      setTasks(allTasks.filter(task => !task.repeat || task.repeat === 'none'));
+      setRepeatingTasks(allTasks.filter(task => task.repeat && task.repeat !== 'none'));
     }).catch((error) => {
       console.log(error);
     });
   }, [showModal]);
 
-  // Handle opening the modal
-  const handleAddTask = () => {
-    setShowModal(true);
-  };
+  const handleAddTask = () => setShowModal(true);
 
-  // Handle closing the modal
   const handleCloseModal = () => {
     setShowModal(false);
     setNewTask({
@@ -53,10 +46,11 @@ function TodoList() {
       color: '#3498db',
       startDateTime: '',
       endDateTime: '',
+      repeat: 'none',
+      repeatEndDate: '',  // Reset repeatEndDate
     });
   };
 
-  // Handle input changes in the modal
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setNewTask((prevTask) => ({
@@ -65,7 +59,6 @@ function TodoList() {
     }));
   };
 
-  // Handle submitting the new task
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newTask.name.trim() === '') return;
@@ -78,12 +71,13 @@ function TodoList() {
       return;
     }
 
+    // Handle repeatEndDate correctly
+    const repeatEndDate = newTask.repeatEndDate ? new Date(newTask.repeatEndDate).toISOString() : '';
+
     const user = JSON.parse(Cookie.get("signed_in_user"));
-    axios.post(`${env.api}/task/user/${user._id}/tasks`, newTask, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
+    axios.post(`${env.api}/task/user/${user._id}/tasks`, { ...newTask, repeatEndDate }, {
+      headers: { 'Content-Type': 'application/json' }
+    }).then(() => {
       handleCloseModal();
     }).catch((error) => {
       console.log(error);
@@ -92,41 +86,27 @@ function TodoList() {
 
   const deleteTask = (taskId) => {
     const user = JSON.parse(Cookie.get("signed_in_user"));
-    axios
-      .delete(`${env.api}/task/user/${user._id}/tasks/${taskId}`)
-      .then(() => {
-        // Update the tasks state to reflect the deleted task
-        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
-      })
-      .catch((error) => {
-        console.error('Error deleting task:', error);
-      });
+    axios.delete(`${env.api}/task/user/${user._id}/tasks/${taskId}`).then(() => {
+      setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+      setRepeatingTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+    }).catch((error) => {
+      console.error('Error deleting task:', error);
+    });
   };
 
-  // Render tasks
-  const renderTasks = () => {
-    return tasks.map((task, index) => (
-      <li key={index} className="task-item">
-        <div className="task-content">  
-          <div
-            className="color-circle"
-            style={{ backgroundColor: task.color }}
-          ></div>
-          <span className={`task-name ${task.urgent ? 'urgent' : ''}`}>
-            {task.name}
-          </span>
-          <span className="task-date">
-            {/* Display start date and end date with time */}
-            {new Date(task.startDateTime).toLocaleString('en-GB')} -{' '}
-            {new Date(task.endDateTime).toLocaleString('en-GB')}
-          </span>
-          <span className="delete-task-button" onClick={() => deleteTask(task._id)}>
-            🗑️
-          </span>
-        </div>
-      </li>
-    ));
-  };
+  const renderTasks = (taskList) => taskList.map((task, index) => (
+    <li key={index} className="task-item">
+      <div className="task-content">
+        <div className="color-circle" style={{ backgroundColor: task.color }}></div>
+        <span className={`task-name ${task.urgent ? 'urgent' : ''}`}>{task.name}</span>
+        <span className="task-date">
+          {new Date(task.startDateTime).toLocaleString('en-GB')} - {new Date(task.endDateTime).toLocaleString('en-GB')}
+        </span>
+        <span className="delete-task-button" onClick={() => deleteTask(task._id)}>🗑️</span>
+        {task.repeat && task.repeat !== 'none' && <span className="task-repeat">({task.repeat})</span>}
+      </div>
+    </li>
+  ));
 
   return (
     <div className="page-background">
@@ -134,105 +114,68 @@ function TodoList() {
         <h1>My Todos</h1>
         <div className="todo-list">
           <div className="todo-header">
-            <button className="add-task-button" onClick={handleAddTask}>
-              +
-            </button>
+            <button className="add-task-button" onClick={handleAddTask}>+</button>
           </div>
-          <ul>{renderTasks()}</ul>
+          <h2>Regular Tasks</h2>
+          <ul>{renderTasks(tasks)}</ul>
+          <h2>Repeating Tasks</h2>
+          <ul>{renderTasks(repeatingTasks)}</ul>
         </div>
       </div>
 
       {showModal && (
         <div className="modal-overlay" onClick={handleCloseModal}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Add New Task</h2>
             <form onSubmit={handleSubmit}>
-              {/* Task Name */}
               <div className="form-group">
                 <label htmlFor="taskName">Task Name:</label>
-                <input
-                  type="text"
-                  id="taskName"
-                  name="name"
-                  value={newTask.name}
-                  onChange={handleInputChange}
-                  required
-                />
+                <input type="text" id="taskName" name="name" value={newTask.name} onChange={handleInputChange} required />
               </div>
 
-              {/* Color Selection */}
               <div className="form-group">
                 <label>Select Color:</label>
                 <div className="color-options">
                   {filters.map((color, index) => (
-                    <div
-                      key={index}
-                      className={`color-circle ${newTask.color === color ? 'selected' : ''
-                        }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() =>
-                        setNewTask((prevTask) => ({ ...prevTask, color }))
-                      }
-                    />
+                    <div key={index} className={`color-circle ${newTask.color === color ? 'selected' : ''}`} style={{ backgroundColor: color }} onClick={() => setNewTask(prevTask => ({ ...prevTask, color }))} />
                   ))}
                 </div>
               </div>
 
-              {/* Start Date and Time */}
               <div className="form-group">
                 <label htmlFor="startDateTime">Start Date and Time:</label>
-                <input
-                  type="datetime-local"
-                  id="startDateTime"
-                  name="startDateTime"
-                  value={newTask.startDateTime}
-                  onChange={handleInputChange}
-                  required
-                />
+                <input type="datetime-local" id="startDateTime" name="startDateTime" value={newTask.startDateTime} onChange={handleInputChange} required />
               </div>
 
-              {/* End Date and Time */}
               <div className="form-group">
                 <label htmlFor="endDateTime">End Date and Time:</label>
-                <input
-                  type="datetime-local"
-                  id="endDateTime"
-                  name="endDateTime"
-                  value={newTask.endDateTime}
-                  onChange={handleInputChange}
-                  required
-                  min={newTask.startDateTime} // Ensure end datetime is after start datetime
-                />
+                <input type="datetime-local" id="endDateTime" name="endDateTime" value={newTask.endDateTime} onChange={handleInputChange} required min={newTask.startDateTime} />
               </div>
 
-              {/* Urgent Checkbox */}
+              <div className="form-group">
+                <label htmlFor="repeat">Repeat:</label>
+                <select id="repeat" name="repeat" value={newTask.repeat} onChange={handleInputChange}>
+                  {repeatOptions.map(option => <option key={option} value={option}>{option}</option>)}
+                </select>
+              </div>
+
+              {newTask.repeat !== 'none' && (
+                <div className="form-group">
+                  <label htmlFor="repeatEndDate">Repeat End Date (optional):</label>
+                  <input type="date" id="repeatEndDate" name="repeatEndDate" value={newTask.repeatEndDate} onChange={handleInputChange} />
+                </div>
+              )}
+
               <div className="form-group checkbox-group">
                 <label>
-                  <input
-                    type="checkbox"
-                    name="urgent"
-                    checked={newTask.urgent}
-                    onChange={handleInputChange}
-                  />
+                  <input type="checkbox" name="urgent" checked={newTask.urgent} onChange={handleInputChange} />
                   Mark as urgent
                 </label>
               </div>
 
-              {/* Buttons */}
               <div className="modal-buttons">
-                <button type="submit" className="submit-button">
-                  Add Task
-                </button>
-                <button
-                  type="button"
-                  className="cancel-button"
-                  onClick={handleCloseModal}
-                >
-                  Cancel
-                </button>
+                <button type="submit" className="submit-button">Add Task</button>
+                <button type="button" className="cancel-button" onClick={handleCloseModal}>Cancel</button>
               </div>
             </form>
           </div>
