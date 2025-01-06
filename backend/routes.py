@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request
 
 from endpoints.schedule_processor import process_csv_to_db, export_to_csv
 from endpoints.schedule_retriever import (retrieve_all_subjects,
-                                          retrieve_schedule, fetch_all_schedules_transformed)
+                                          retrieve_schedule, fetch_all_schedules_transformed, fetch_schedule_by_program)
 from endpoints.task_logic import delete_task, get_all_tasks, get_tasks_history, set_task
 from endpoints.user_logic import (delete_user, get_user_data, login_user,
                                   register_user, set_user_data,
@@ -105,6 +105,11 @@ def get_schedule(program_name, subject_name):
 @schedule_bp.route('/schedules/all', methods=['GET'])
 def get_all_formatted_schedules():
     result, status_code = fetch_all_schedules_transformed()
+    return jsonify(result), status_code
+
+@schedule_bp.route('/schedules/<program_name>', methods=['GET'])
+def get_schedule_by_program(program_name):
+    result, status_code = fetch_schedule_by_program(program_name)
     return jsonify(result), status_code
 
 # Route to add a new task
