@@ -139,3 +139,16 @@ def retrieve_tasks_history(user_id):
 def remove_task(user_id, task_id):
     result, status_code = delete_task(user_id, task_id)
     return jsonify(result), status_code
+
+# Route to change user password
+@auth_bp.route('/user/<user_id>/change-password', methods=['PUT'])
+def change_password(user_id):
+    data = request.json
+    current_password = data.get("currentPassword")
+    new_password = data.get("newPassword")
+
+    if not current_password or not new_password:
+        return {"error": "Both current and new passwords are required"}, 400
+
+    result, status_code = change_user_password(user_id, current_password, new_password)
+    return jsonify(result), status_code
