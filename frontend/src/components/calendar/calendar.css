@@ -353,7 +353,7 @@
 .import-label {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #3498db; /* Svetlo modra */
+    background-color: #3498db; 
     color: white;
     border-radius: 5px;
     font-size: 14px;
@@ -362,8 +362,8 @@
 }
 
 .import-label:hover {
-    background-color: #2980b9; /* Temnejša modra */
-    transform: scale(1.05); /* Rahlo povečanje */
+    background-color: #2980b9; 
+    transform: scale(1.05); 
 }
 
 #file-upload {
@@ -386,3 +386,119 @@
     transform: scale(1.05);
 }
 
+/* Glavni slog za dropdown select */
+.program-names select {
+    width: 100%;
+    max-width: 500px; /* Večja širina za boljše prilagajanje */
+    padding: 12px 16px; /* Večji notranji razmiki za udobnejši prikaz */
+    font-size: 16px; /* Večja pisava */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Elegantna pisava */
+    border: 1px solid #dcdfe6; /* Nežna, svetla obroba */
+    border-radius: 8px; /* Zaobljeni robovi */
+    background-color: #fff; /* Čisto belo ozadje */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Nežna senca */
+    transition: all 0.3s ease; /* Prehodi ob interakcijah */
+    cursor: pointer; /* Kazalec spremeni v kazalec roke */
+}
+
+.program-names select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); 
+    outline: none; 
+}
+
+.program-names option {
+    font-size: 16px; 
+    color: #333; 
+    background-color: #fff; 
+    padding: 12px 16px; 
+    border-bottom: 1px solid #f1f1f1; 
+    transition: background-color 0.2s ease-in-out; 
+}
+
+.program-names option:hover {
+    background-color: #f0f8ff; 
+}
+
+.program-names label {
+    font-size: 18px; 
+    font-weight: bold; 
+    margin-bottom: 8px; 
+    display: block; 
+    color: #555; 
+}
+
+.program-names {
+    margin-bottom: 30px; 
+}
+
+
+
+
+.filters div {
+    font-size: 18px; 
+    font-weight: 600; 
+    color: #333; 
+    margin-bottom: 10px; 
+}
+
+.clear-filter {
+    font-size: 16px;
+    color: #e74c3c !important;
+    cursor: pointer;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.clear-filter:hover {
+    color: #c0392b !important;  
+    text-decoration: underline; 
+}
+
+.filter, .active-filter {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 5px;
+    transition: transform 0.2s ease, opacity 0.3s ease-in-out;
+}
+
+.filter:hover, .active-filter {
+    transform: scale(1.2);
+}
+
+.active-filter {
+    border: 2px solid #e74c3c;
+}
+
+.filter {
+    opacity: 0.8;
+}
+
+.filter:hover {
+    opacity: 1;
+}
+
+.program-names select {
+    width: 100%;
+    max-width: 500px; 
+    padding: 12px 16px; 
+    font-size: 16px; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    border: 1px solid #dcdfe6; 
+    border-radius: 8px; 
+    background-color: #fff; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); 
+    transition: all 0.3s ease; 
+    cursor: pointer;
+}
+
+.program-names select:focus {
+    border-color: #3498db; 
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); 
+    outline: none; 
+}
+
+.filters, .program-names {
+    margin-bottom: 30px;
+}
