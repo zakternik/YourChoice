@@ -9,7 +9,7 @@ from endpoints.schedule_retriever import (retrieve_all_subjects,
 from endpoints.task_logic import delete_task, get_all_tasks, get_tasks_history, set_task
 from endpoints.user_logic import (delete_user, get_user_data, login_user,
                                   register_user, set_user_data,
-                                  update_user_data)
+                                  update_user_data, change_user_password)
 
 auth_bp = Blueprint('auth', __name__)
 schedule_bp = Blueprint('schedule', __name__)

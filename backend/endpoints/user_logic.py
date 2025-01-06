@@ -145,4 +145,7 @@ def change_user_password(user_id, current_password, new_password):
         {"$set": {"Password": new_password}}
     )
 
+    if result.matched_count == 0:
+        return {"error": "User not found"}, 404
+
     return {"message": "Password changed"}, 200

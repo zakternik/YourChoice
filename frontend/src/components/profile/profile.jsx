@@ -1,4 +1,5 @@
 import axios from 'axios';
+import sha256 from 'crypto-js/sha256';
 import Cookie from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -101,10 +102,14 @@ function Profile() {
       return;
     }
 
+    // Hash passwords before sending
+    const hashedCurrentPassword = sha256(currentPassword).toString();
+    const hashedNewPassword = sha256(newPassword).toString();
+
     const user = JSON.parse(Cookie.get('signed_in_user'));
     axios.put(`${env.api}/auth/user/${user._id}/change-password`, {
-      currentPassword,
-      newPassword,
+      currentPassword: hashedCurrentPassword,
+      newPassword: hashedNewPassword,
     }).then(() => {
       showToast('Password changed successfully.');
       setModalOpen(false);
