@@ -112,3 +112,52 @@ def fetch_all_schedules_transformed():
 
     # Return all transformed tasks
     return {"tasks": all_tasks}, 200
+
+
+def fetch_schedule_by_program(program):
+    schedules = db.schedules.find({"program": program}, {"predmet": 1, "entries": 1})
+
+    all_tasks = []
+    colors = [
+        '#1abc9c', '#2ecc71', '#3498db', '#9b59b6',
+        '#f1c40f', '#e67e22', '#e74c3c', '#34495e',
+        '#95a5a6', '#7f8c8d'
+    ]
+
+    # Process each schedule
+    for schedule in schedules:
+        predmet = schedule.get("predmet", "Unknown Subject")
+
+        # Process each entry within the schedule
+        for entry in schedule.get("entries", []):
+            datum = entry.get("Datum")
+            ura = entry.get("Ura")
+
+            # Parse date and time
+            try:
+                # Extract start and end times from Ura (e.g., "07:00-10:00" -> "07:00" and "10:00")
+                start_time_str, end_time_str = ura.split('-')
+
+                # Combine Datum and time strings to form start_time and end_time
+                start_datetime = datetime.strptime(f"{datum} {start_time_str}", "%d.%m.%Y %H:%M")
+                end_datetime = datetime.strptime(f"{datum} {end_time_str}", "%d.%m.%Y %H:%M")
+
+            except Exception as e:
+                # Handle parsing errors
+                print(f"Error parsing date or time for entry: {entry}, error: {e}")
+                continue  # Skip this entry if parsing fails
+
+            # Randomly choose a color from the specified list
+            color = random.choice(colors)
+
+            # Append the transformed entry to the list
+            all_tasks.append({
+                "name": predmet,
+                "color": color,
+                "start_time": start_datetime.isoformat()[:-3],
+                "end_time": end_datetime.isoformat()[:-3]
+
+            })
+
+    # Return all transformed tasks
+    return {"tasks": all_tasks}, 200

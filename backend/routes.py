@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request
 
 from endpoints.schedule_processor import process_csv_to_db, export_to_csv
 from endpoints.schedule_retriever import (retrieve_all_subjects,
-                                          retrieve_schedule, fetch_all_schedules_transformed)
+                                          retrieve_schedule, fetch_all_schedules_transformed, fetch_schedule_by_program)
 from endpoints.task_logic import delete_task, get_all_tasks, get_tasks_history, set_task
 from endpoints.user_logic import (delete_user, get_user_data, login_user,
                                   register_user, set_user_data,
@@ -107,6 +107,11 @@ def get_all_formatted_schedules():
     result, status_code = fetch_all_schedules_transformed()
     return jsonify(result), status_code
 
+@schedule_bp.route('/schedules/<program_name>', methods=['GET'])
+def get_schedule_by_program(program_name):
+    result, status_code = fetch_schedule_by_program(program_name)
+    return jsonify(result), status_code
+
 # Route to add a new task
 @task_bp.route('/user/<user_id>/tasks', methods=['POST'])
 def add_task(user_id):
@@ -133,4 +138,17 @@ def retrieve_tasks_history(user_id):
 @task_bp.route('/user/<user_id>/tasks/<task_id>', methods=['DELETE'])
 def remove_task(user_id, task_id):
     result, status_code = delete_task(user_id, task_id)
+    return jsonify(result), status_code
+
+# Route to change user password
+@auth_bp.route('/user/<user_id>/change-password', methods=['PUT'])
+def change_password(user_id):
+    data = request.json
+    current_password = data.get("currentPassword")
+    new_password = data.get("newPassword")
+
+    if not current_password or not new_password:
+        return {"error": "Both current and new passwords are required"}, 400
+
+    result, status_code = change_user_password(user_id, current_password, new_password)
     return jsonify(result), status_code
