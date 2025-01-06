@@ -243,9 +243,9 @@ function Calendar() {
             {signedIn !== false ? (
                 <div className="action-section">
                 <div className="action-card">
-                <h3>Upravljanje urnika</h3>
+                <h3>Schedule Management</h3>
                 <div className="buttons-wrapper">
-                <label htmlFor="file-upload" className="import-label">Uvozi urnik</label>
+                <label htmlFor="file-upload" className="import-label">Import schedule</label>
                 <input
                     id="file-upload"
                     type="file"
@@ -253,7 +253,7 @@ function Calendar() {
                     ref={fileInputRef}
                     onChange={handleFileImport}
                 />
-                <button className="export-button" onClick={handleFileExport}>Izvozi urnik</button>
+                <button className="export-button" onClick={handleFileExport}>Export schedule</button>
                 </div>
                 </div>
                 </div>
