@@ -321,3 +321,68 @@
     .calendar-grid > div {
         scroll-snap-align: start;
 }
+
+.action-section {
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid #dcdcdc; /* Tanka črta za ločitev */
+}
+
+.action-card {
+    background-color: #ffffff; /* Bela kartica */
+    border: 1px solid #e0e0e0; /* Nevtralni okvir */
+    border-radius: 8px; /* Zaobljeni robovi */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Mehka senca */
+    padding: 20px;
+    text-align: center;
+}
+
+.action-card h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
+}
+
+.import-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db; /* Svetlo modra */
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.import-label:hover {
+    background-color: #2980b9; /* Temnejša modra */
+    transform: scale(1.05); /* Rahlo povečanje */
+}
+
+#file-upload {
+    display: none; /* Skrije input polje */
+}
+
+.export-button {
+    padding: 10px 20px;
+    background-color: #2ecc71; /* Zelena barva */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.export-button:hover {
+    background-color: #27ae60; /* Temnejša zelena */
+    transform: scale(1.05);
+}
+

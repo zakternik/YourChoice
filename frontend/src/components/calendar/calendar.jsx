@@ -241,19 +241,20 @@ function Calendar() {
                 </div>
             </div>
             {signedIn !== false ? (
-                <div>
-                <div className="import-data">
-                   <label htmlFor="file-upload">Import your own schedule</label>
-                    <input
-                        id="file-upload"
-                        type="file"
-                        accept=".csv"
-                        ref={fileInputRef}
-                        onChange={handleFileImport}
-                    />
+                <div className="action-section">
+                <div className="action-card">
+                <h3>Upravljanje urnika</h3>
+                <div className="buttons-wrapper">
+                <label htmlFor="file-upload" className="import-label">Uvozi urnik</label>
+                <input
+                    id="file-upload"
+                    type="file"
+                    accept=".csv"
+                    ref={fileInputRef}
+                    onChange={handleFileImport}
+                />
+                <button className="export-button" onClick={handleFileExport}>Izvozi urnik</button>
                 </div>
-                <div className="import-data">
-                    <button id="file-upload" onClick={handleFileExport}>Export your schedule</button>
                 </div>
                 </div>
                 
