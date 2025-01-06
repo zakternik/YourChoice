@@ -127,3 +127,22 @@ def delete_user(user_id):
         return {"error": "User not found"}, 404
 
     return {"message": "User account deleted successfully"}, 200
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
+def change_user_password(user_id, current_password, new_password):
+    collection = db.users
+    user = collection.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        return {"error": "User not found"}, 404
+
+    if user["Password"] != current_password:
+        return {"error": "Invalid current password"}, 400
+
+    result = collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"Password": new_password}}
+    )
+
+    return {"message": "Password changed"}, 200
