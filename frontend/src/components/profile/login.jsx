@@ -12,29 +12,31 @@ function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();  // Prevent the default form submit behavior
+    e.preventDefault();
     const hashedPassword = sha256(password).toString();
     const data = {
-      Email: email,
-      Password: hashedPassword
+        Email: email,
+        Password: hashedPassword
     };
 
     axios.post(`${env.api}/auth/login`, data, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+        headers: {
+            'Content-Type': 'application/json'
+        }
     }).then((response) => {
-      Cookie.set("signed_in_user", JSON.stringify(response.data));
-      navigate("/");
-      window.location.reload();
+        Cookie.set("signed_in_user", JSON.stringify(response.data));
+        navigate("/");
+        window.location.reload();
     }).catch((error) => {
-      alert("Invalid email or password");
-      console.log(error);
+        setErrorMessage("Invalid email or password");
+        console.log(error);
     });
-  };
+};
+
 
   const handleGoogleLogin = async (googleData) => {
     const { tokenObj } = googleData;
@@ -77,6 +79,7 @@ function Login() {
             <label htmlFor="password">Password:</label>
             <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
+          {errorMessage && <div className="alert-message">{errorMessage}</div>}
           <button type="submit" className="login-button" onClick={handleSubmit}>Login</button>
           <div className="separator">Do you want to continue with Google?</div>
           <GoogleLogin
