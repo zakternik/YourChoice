@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import '../../App.css';
 import env from "../../env.json";
 import './calendar.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function getStartOfWeek(date) {
     const dayOfWeek = date.getDay();
@@ -210,20 +211,23 @@ function Calendar() {
                 <h2>Week of {currentWeek.toDateString()}</h2>
                 <button className="change-week" onClick={handleNextWeek}>→</button>
             </div>
+            <button className="scroll-to-bottom" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
+    <i className="fas fa-calendar-alt" style={{marginRight: '0.5rem'}}></i> Go to Schedule Management
+</button>
             <div className="program-names">
-    <label htmlFor="program-select">Select Program:</label>
-    <select
-        id="program-select"
-        onChange={(e) => setProgramName(e.target.value)}
-        value={program_name}
-    >
-        {program_names.map((program, index) => (
-            <option key={index} value={program}>
-                {getProgramDisplayName(program)}  {/* Prikazujemo samo del pred drugo vejico */}
-            </option>
-        ))}
-    </select>
-</div>
+                <label htmlFor="program-select">Select Program:</label>
+                <select
+                    id="program-select"
+                    onChange={(e) => setProgramName(e.target.value)}
+                    value={program_name}
+                >
+                    {program_names.map((program, index) => (
+                        <option key={index} value={program}>
+                            {getProgramDisplayName(program)}  {/* Prikazujemo samo del pred drugo vejico */}
+                        </option>
+                    ))}
+                </select>
+            </div>
             <div className="filters">
                 <div>Filter:</div>
                 {filters.map((filter, index) => (

@@ -432,9 +432,6 @@
     margin-bottom: 30px; 
 }
 
-
-
-
 .filters div {
     font-size: 18px; 
     font-weight: 600; 
@@ -501,4 +498,25 @@
 
 .filters, .program-names {
     margin-bottom: 30px;
+}
+
+.scroll-to-bottom {
+    margin: 10px 0;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    position: absolute;
+    right: 5rem;
+    margin-top: 1.5rem;
+}
+
+.scroll-to-bottom:hover {
+    background-color: #2980b9;
 }
