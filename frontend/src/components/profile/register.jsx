@@ -14,6 +14,7 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState(''); // Novo stanje za ponovitev gesla
   const [showPassword, setShowPassword] = useState(false); // Dodano stanje za prikaz gesla
   const [errorMessage, setErrorMessage] = useState(''); // Dodano stanje za napake
+  const [registerError, setRegisterError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,32 +28,38 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Preverimo, če se gesli ujemata
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match.');
       return; // Preprečimo pošiljanje, če se gesli ne ujemata
     }
-
+    else {
+      setErrorMessage('');
+    }
+  
     const hashedPassword = sha256(password).toString();
     const data = {
       Username: username,
       Email: email,
-      Password: hashedPassword
+      Password: hashedPassword,
     };
-
-    axios.post(`${env.api}/auth/register`, data, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      Cookie.set("signed_in_user", JSON.stringify(response.data));
-      navigate("/");
-      window.location.reload();
-    }).catch((error) => {
-      console.log('Error:', error);
-      alert('Username exists.');
-    });
+  
+    axios
+      .post(`${env.api}/auth/register`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        Cookie.set('signed_in_user', JSON.stringify(response.data));
+        navigate('/');
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+        setRegisterError('Username or email already exists.'); // Prikaz napake za registracijo
+      });
   };
 
   const handleGoogleLogin = async (googleData) => {
@@ -134,6 +141,7 @@ function Register() {
           </div>
 
           {errorMessage && <div className="error-message">{errorMessage}</div>} {/* Prikaz napake */}
+          {registerError && <div className="alert-message">{registerError}</div>}
 
           <button type="submit" className="login-button">Register</button>
         </form>
