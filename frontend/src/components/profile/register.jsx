@@ -87,7 +87,7 @@ function Register() {
       height: '80vh',
       overflow: 'auto'  
     }}>
-      <div className="login-container" style={{marginTop : '4rem'}}>
+      <div className="login-container" style={{marginTop: '4rem', marginBottom: '2rem'}}>
         <h1>Register</h1>
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
