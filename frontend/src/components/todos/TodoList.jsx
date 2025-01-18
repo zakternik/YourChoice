@@ -167,8 +167,8 @@ function TodoList() {
               )}
 
               <div className="form-group checkbox-group">
-                <label>
-                  <input type="checkbox" name="urgent" checked={newTask.urgent} onChange={handleInputChange} />
+                <label className='d-flex-align-center'>
+                  <input type="checkbox" name="urgent" className='me-1' checked={newTask.urgent} onChange={handleInputChange} />
                   Mark as urgent
                 </label>
               </div>
