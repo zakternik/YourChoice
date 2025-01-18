@@ -30,7 +30,7 @@ function Navbar() {
         <nav className="navbar">
             <div className="navbar-container">
                 <div className="navbar-brand">
-                    <Link to="/">MyApp</Link>
+                    <Link to="/">Your Choice - Planer TNP</Link>
                 </div>
                 <button className="menu-toggle" onClick={toggleMenu}>
                     ☰
